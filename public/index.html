@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SyedFlights | Travel & Flight Booking</title>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+
+    <!-- ============================
+         NAVBAR
+    ============================= -->
+    <nav id="navbar">
+      <div class="nav__header">
+        <div class="nav__logo">
+          <a href="#home" class="logo" aria-label="SyedFlights Home">
+            SyedFlights <i class="ri-flight-takeoff-line logo__icon"></i>
+          </a>
+        </div>
+        <div class="nav__actions">
+          <div class="nav__menu__btn" id="menu-btn" aria-label="Toggle Menu" role="button" tabindex="0">
+            <i class="ri-menu-line"></i>
+          </div>
+        </div>
+      </div>
+      <ul class="nav__links" id="nav-links">
+        <li><a href="#home">HOME</a></li>
+        <li><a href="#about">DESTINATIONS</a></li>
+        <li><a href="#search">SEARCH</a></li>
+        <li><a href="#tour">TOUR</a></li>
+        <li><a href="#package">PACKAGE</a></li>
+        <li><a href="#contact">CONTACT</a></li>
+        <li><a href="#" id="nav-account-link">SIGN IN</a></li>
+      </ul>
+      <div class="nav__btns">
+        <button class="account__btn" id="account-btn" aria-haspopup="dialog">
+          <i class="ri-user-line"></i>
+          <span id="account-btn-label">Sign In</span>
+        </button>
+        <button class="btn" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">BOOK TRIP</button>
+      </div>
+    </nav>
+
+    <!-- ============================
+         AUTH MODAL — Sign In / Create Account
+    ============================= -->
+    <div class="auth__overlay" id="auth-overlay">
+      <div class="auth__modal" role="dialog" aria-modal="true" aria-labelledby="auth-modal-title">
+        <button class="auth__close" id="auth-close" aria-label="Close">
+          <i class="ri-close-line"></i>
+        </button>
+
+        <div class="auth__tabs">
+          <button class="auth__tab active" data-auth-tab="login" id="auth-modal-title">Sign In</button>
+          <button class="auth__tab" data-auth-tab="signup">Create Account</button>
+        </div>
+
+        <!-- LOGIN FORM -->
+        <form class="auth__form" id="login-form">
+          <div class="form__group">
+            <label for="login-email">Email Address</label>
+            <input type="email" id="login-email" placeholder="you@example.com" required />
+          </div>
+          <div class="form__group">
+            <label for="login-password">Password</label>
+            <input type="password" id="login-password" placeholder="••••••••" required minlength="6" />
+          </div>
+          <div class="auth__alert" id="login-alert"></div>
+          <button type="submit" class="btn auth__submit" id="login-submit">
+            <span class="auth__submit__text"><i class="ri-login-circle-line"></i> Sign In</span>
+            <span class="auth__submit__loading" style="display:none;"><i class="ri-loader-4-line"></i> Signing in...</span>
+          </button>
+        </form>
+
+        <!-- SIGNUP FORM -->
+        <form class="auth__form" id="signup-form" style="display:none;">
+          <div class="form__group">
+            <label for="signup-name">Full Name</label>
+            <input type="text" id="signup-name" placeholder="Syed Imran Shah" required minlength="2" />
+          </div>
+          <div class="form__group">
+            <label for="signup-email">Email Address</label>
+            <input type="email" id="signup-email" placeholder="you@example.com" required />
+          </div>
+          <div class="form__group">
+            <label for="signup-password">Password</label>
+            <input type="password" id="signup-password" placeholder="At least 6 characters" required minlength="6" />
+          </div>
+          <div class="auth__alert" id="signup-alert"></div>
+          <button type="submit" class="btn auth__submit" id="signup-submit">
+            <span class="auth__submit__text"><i class="ri-user-add-line"></i> Create Account</span>
+            <span class="auth__submit__loading" style="display:none;"><i class="ri-loader-4-line"></i> Creating account...</span>
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- ============================
+         HERO
+    ============================= -->
+    <header id="home">
+      <div class="header__container">
+        <div class="header__content">
+          <p>ELEVATE YOUR TRAVEL JOURNEY</p>
+          <h1>Experience The Magic Of Flight!</h1>
+          <div class="header__btns">
+            <button class="btn" onclick="document.getElementById('search').scrollIntoView({behavior:'smooth'})">Search Flights</button>
+            <a href="#tour" aria-label="Watch how it works">
+              <span><i class="ri-play-circle-fill"></i></span>
+            </a>
+          </div>
+        </div>
+        <div class="header__image">
+          <img src="assets/header.png" alt="Airplane flying in the sky" />
+        </div>
+      </div>
+    </header>
+
+    <!-- ============================
+         UPGRADE 2: FLIGHT SEARCH SECTION
+    ============================= -->
+    <section class="section__container search__container" id="search">
+      <h2 class="section__header">Find Your Perfect Flight</h2>
+      <p class="section__description">Search from hundreds of destinations worldwide</p>
+
+      <div class="search__box">
+        <!-- Tabs -->
+        <div class="search__tabs">
+          <button class="search__tab active" data-tab="oneway">One Way</button>
+          <button class="search__tab" data-tab="roundtrip">Round Trip</button>
+          <button class="search__tab" data-tab="multicity">Multi City</button>
+        </div>
+
+        <!-- Search Form -->
+        <div class="search__form">
+          <div class="search__field">
+            <label><i class="ri-flight-takeoff-line"></i> From</label>
+            <input type="text" id="search-from" placeholder="City or Airport" list="cities-from" autocomplete="off" />
+            <datalist id="cities-from">
+              <option value="New York (JFK)">
+              <option value="London (LHR)">
+              <option value="Dubai (DXB)">
+              <option value="Paris (CDG)">
+              <option value="Tokyo (NRT)">
+              <option value="Bali (DPS)">
+              <option value="Istanbul (IST)">
+              <option value="Singapore (SIN)">
+              <option value="Karachi (KHI)">
+              <option value="Lahore (LHE)">
+              <option value="Islamabad (ISB)">
+            </datalist>
+          </div>
+
+          <!-- Swap Button -->
+          <button class="swap__btn" id="swap-btn" aria-label="Swap cities">
+            <i class="ri-arrow-left-right-line"></i>
+          </button>
+
+          <div class="search__field">
+            <label><i class="ri-flight-land-line"></i> To</label>
+            <input type="text" id="search-to" placeholder="City or Airport" list="cities-to" autocomplete="off" />
+            <datalist id="cities-to">
+              <option value="New York (JFK)">
+              <option value="London (LHR)">
+              <option value="Dubai (DXB)">
+              <option value="Paris (CDG)">
+              <option value="Tokyo (NRT)">
+              <option value="Bali (DPS)">
+              <option value="Istanbul (IST)">
+              <option value="Singapore (SIN)">
+              <option value="Karachi (KHI)">
+              <option value="Lahore (LHE)">
+              <option value="Islamabad (ISB)">
+            </datalist>
+          </div>
+
+          <div class="search__field">
+            <label><i class="ri-calendar-line"></i> Departure</label>
+            <input type="date" id="search-depart" />
+          </div>
+
+          <div class="search__field" id="return-field" style="display:none;">
+            <label><i class="ri-calendar-check-line"></i> Return</label>
+            <input type="date" id="search-return" />
+          </div>
+
+          <div class="search__field">
+            <label><i class="ri-user-line"></i> Passengers</label>
+            <select id="search-passengers">
+              <option value="1">1 Passenger</option>
+              <option value="2">2 Passengers</option>
+              <option value="3">3 Passengers</option>
+              <option value="4">4 Passengers</option>
+              <option value="5">5+ Passengers</option>
+            </select>
+          </div>
+
+          <button class="btn search__btn" id="search-btn">
+            <i class="ri-search-line"></i> Search Flights
+          </button>
+        </div>
+
+        <!-- Search Results -->
+        <div class="search__results" id="search-results" style="display:none;">
+          <h3 class="results__title">Available Flights</h3>
+          <div class="results__grid" id="results-grid"></div>
+        </div>
+
+        <!-- No Results -->
+        <div class="search__empty" id="search-empty" style="display:none;">
+          <i class="ri-flight-takeoff-line"></i>
+          <p>No flights found. Try different cities or dates.</p>
+        </div>
+
+        <!-- My Saved Trips — only shown when logged in -->
+        <div class="saved__trips" id="saved-trips-panel" style="display:none;">
+          <h3 class="results__title"><i class="ri-bookmark-3-fill"></i> My Saved Trips</h3>
+          <div class="saved__trips__grid" id="saved-trips-grid"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================
+         POPULAR DESTINATIONS
+    ============================= -->
+    <section class="section__container destination__container" id="about">
+      <h2 class="section__header">Popular Destinations</h2>
+      <p class="section__description">Discover the Most Loved Destinations Around the Globe</p>
+      <div class="destination__grid">
+        <div class="destination__card">
+          <img src="assets/destination-1.jpg" alt="New York City skyline" />
+          <div class="destination__card__details">
+            <div>
+              <h4>Tradition and Futurism</h4>
+              <p>New York City, USA</p>
+            </div>
+            <div class="destination__rating">
+              <span><i class="ri-star-fill"></i></span> 4.7
+            </div>
+          </div>
+        </div>
+        <div class="destination__card">
+          <img src="assets/destination-2.jpg" alt="Eiffel Tower in Paris" />
+          <div class="destination__card__details">
+            <div>
+              <h4>The City of Lights</h4>
+              <p>Paris, France</p>
+            </div>
+            <div class="destination__rating">
+              <span><i class="ri-star-fill"></i></span> 4.5
+            </div>
+          </div>
+        </div>
+        <div class="destination__card">
+          <img src="assets/destination-3.jpg" alt="Bali temple and tropical scenery" />
+          <div class="destination__card__details">
+            <div>
+              <h4>Island of the Gods</h4>
+              <p>Bali, Indonesia</p>
+            </div>
+            <div class="destination__rating">
+              <span><i class="ri-star-fill"></i></span> 4.8
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================
+         JOURNEY / HOW IT WORKS
+    ============================= -->
+    <section class="section__container journey__container" id="tour">
+      <h2 class="section__header">Journey To The Sky Made Simple!</h2>
+      <p class="section__description">Effortless Planning for Your Next Adventure</p>
+      <div class="journey__grid">
+        <div class="journey__card">
+          <div class="journey__card__bg">
+            <span><i class="ri-bookmark-3-line"></i></span>
+            <h4>Seamless Booking Process</h4>
+          </div>
+          <div class="journey__card__content">
+            <span><i class="ri-bookmark-3-line"></i></span>
+            <h4>Easy Reservations, One Click Away</h4>
+            <p>From flights and accommodations to activities and transfers, everything you need is available at your fingertips.</p>
+          </div>
+        </div>
+        <div class="journey__card">
+          <div class="journey__card__bg">
+            <span><i class="ri-landscape-fill"></i></span>
+            <h4>Tailored Itineraries</h4>
+          </div>
+          <div class="journey__card__content">
+            <span><i class="ri-landscape-fill"></i></span>
+            <h4>Customized Plans Just for You</h4>
+            <p>Enjoy personalized travel plans designed to match your preferences and interests for a journey uniquely yours.</p>
+          </div>
+        </div>
+        <div class="journey__card">
+          <div class="journey__card__bg">
+            <span><i class="ri-map-2-line"></i></span>
+            <h4>Expert Local Insights</h4>
+          </div>
+          <div class="journey__card__content">
+            <span><i class="ri-map-2-line"></i></span>
+            <h4>Insider Tips and Recommendations</h4>
+            <p>We provide curated recommendations for dining, sightseeing, and hidden gems so you explore like a local.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================
+         SHOWCASE
+    ============================= -->
+    <section class="section__container showcase__container" id="package">
+      <div class="showcase__image">
+        <img src="assets/showcase.jpg" alt="Scenic travel destination viewed from above" />
+      </div>
+      <div class="showcase__content">
+        <h4>UNLEASH WANDERLUST WITH SYEDFLIGHTS</h4>
+        <p>Embark on a journey like no other with SyedFlights, where your travel dreams come to life. Our mission is to inspire and facilitate your adventures, whether you seek vibrant cityscapes, pristine beaches, or ancient landmarks.</p>
+        <p>With SyedFlights as your ultimate travel companion, exploring the wonders of the world has never been easier. From the moment you start planning to the day you return home, we are dedicated to making your experience seamless.</p>
+        <div class="showcase__btn">
+          <button class="btn" onclick="document.getElementById('search').scrollIntoView({behavior:'smooth'})">
+            Search Flights Now <span><i class="ri-arrow-right-line"></i></span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================
+         STATS BANNER
+    ============================= -->
+    <section class="section__container banner__container">
+      <div class="banner__card">
+        <h4>10+</h4>
+        <p>Years Experience</p>
+      </div>
+      <div class="banner__card">
+        <h4>12K</h4>
+        <p>Happy Clients</p>
+      </div>
+      <div class="banner__card">
+        <h4>4.8</h4>
+        <p>Overall Ratings</p>
+      </div>
+    </section>
+
+    <!-- ============================
+         DISCOVER
+    ============================= -->
+    <section class="section__container discover__container">
+      <h2 class="section__header">Discover The World From Above</h2>
+      <p class="section__description">Experience Breathtaking Views and Unique Perspectives</p>
+      <div class="discover__grid">
+        <div class="discover__card">
+          <span><i class="ri-camera-lens-line"></i></span>
+          <h4>Aerial Cityscapes</h4>
+          <p>Witness architectural marvels from a bird's-eye view, offering a truly unique perspective on the world below.</p>
+        </div>
+        <div class="discover__card">
+          <span><i class="ri-ship-line"></i></span>
+          <h4>Coastal Wonders</h4>
+          <p>Fly over pristine coastlines and turquoise waters, revealing hidden coves and vibrant coral reefs.</p>
+        </div>
+        <div class="discover__card">
+          <span><i class="ri-landscape-line"></i></span>
+          <h4>Historic Landmarks</h4>
+          <p>Observe the grandeur of ancient castles in a way that ground tours simply cannot offer.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================
+         TESTIMONIALS
+    ============================= -->
+    <section class="section__container client__container">
+      <h2 class="section__header">Loved By Over Thousand Travelers</h2>
+      <p class="section__description">Stories of wanderlust and cherished memories from our valued clients.</p>
+      <div class="swiper">
+        <div class="swiper-wrapper">
+          <div class="swiper-slide">
+            <div class="client__card">
+              <div class="client__content">
+                <div class="client__rating" aria-label="5 out of 5 stars">
+                  <span><i class="ri-star-fill"></i></span><span><i class="ri-star-fill"></i></span>
+                  <span><i class="ri-star-fill"></i></span><span><i class="ri-star-fill"></i></span>
+                  <span><i class="ri-star-fill"></i></span>
+                </div>
+                <p>SyedFlights has completely transformed my travel experience. From hidden gems in bustling cities to serene retreats, every detail was thoughtfully arranged. I can't recommend SyedFlights enough!</p>
+              </div>
+              <div class="client__details">
+                <img src="assets/client-1.jpg" alt="John Adams - Travel Blogger" />
+                <div><h4>John Adams</h4><h5>Travel Blogger</h5></div>
+              </div>
+            </div>
+          </div>
+          <div class="swiper-slide">
+            <div class="client__card">
+              <div class="client__content">
+                <div class="client__rating" aria-label="5 out of 5 stars">
+                  <span><i class="ri-star-fill"></i></span><span><i class="ri-star-fill"></i></span>
+                  <span><i class="ri-star-fill"></i></span><span><i class="ri-star-fill"></i></span>
+                  <span><i class="ri-star-fill"></i></span>
+                </div>
+                <p>My recent adventure with SyedFlights was nothing short of spectacular. The personalized itineraries led me to extraordinary locations I'd never have found on my own. Already planning my next trip!</p>
+              </div>
+              <div class="client__details">
+                <img src="assets/client-2.jpg" alt="Emily Thompson - Adventure Enthusiast" />
+                <div><h4>Emily Thompson</h4><h5>Adventure Enthusiast</h5></div>
+              </div>
+            </div>
+          </div>
+          <div class="swiper-slide">
+            <div class="client__card">
+              <div class="client__content">
+                <div class="client__rating" aria-label="5 out of 5 stars">
+                  <span><i class="ri-star-fill"></i></span><span><i class="ri-star-fill"></i></span>
+                  <span><i class="ri-star-fill"></i></span><span><i class="ri-star-fill"></i></span>
+                  <span><i class="ri-star-fill"></i></span>
+                </div>
+                <p>SyedFlights offered a transformative experience for my research into historical landmarks. The unique aerial perspectives provided a new level of appreciation and insight into the sites I studied.</p>
+              </div>
+              <div class="client__details">
+                <img src="assets/client-3.jpg" alt="Sarah Lee - Cultural Historian" />
+                <div><h4>Sarah Lee</h4><h5>Cultural Historian</h5></div>
+              </div>
+            </div>
+          </div>
+          <div class="swiper-slide">
+            <div class="client__card">
+              <div class="client__content">
+                <div class="client__rating" aria-label="5 out of 5 stars">
+                  <span><i class="ri-star-fill"></i></span><span><i class="ri-star-fill"></i></span>
+                  <span><i class="ri-star-fill"></i></span><span><i class="ri-star-fill"></i></span>
+                  <span><i class="ri-star-fill"></i></span>
+                </div>
+                <p>SyedFlights made balancing work and travel effortless. Their efficient planning and excellent recommendations helped me maximize every moment. I look forward to working with them again!</p>
+              </div>
+              <div class="client__details">
+                <img src="assets/client-4.jpg" alt="David Patel - Business Executive" />
+                <div><h4>David Patel</h4><h5>Business Executive</h5></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================
+         UPGRADE 3: CONTACT FORM
+    ============================= -->
+    <section class="section__container contact__section" id="contact">
+      <h2 class="section__header">Get In Touch</h2>
+      <p class="section__description">Have questions? We'd love to hear from you. Send us a message!</p>
+
+      <div class="contact__wrapper">
+        <!-- Contact Info -->
+        <div class="contact__info">
+          <div class="contact__info__card">
+            <span><i class="ri-phone-fill"></i></span>
+            <div>
+              <h4>Call Us</h4>
+              <a href="tel:+919876543210">+91 9876543210</a>
+            </div>
+          </div>
+          <div class="contact__info__card">
+            <span><i class="ri-mail-line"></i></span>
+            <div>
+              <h4>Email Us</h4>
+              <a href="mailto:info@syedflights.com">info@syedflights.com</a>
+            </div>
+          </div>
+          <div class="contact__info__card">
+            <span><i class="ri-map-pin-2-fill"></i></span>
+            <div>
+              <h4>Visit Us</h4>
+              <p>New Delhi, India</p>
+            </div>
+          </div>
+          <div class="contact__info__card">
+            <span><i class="ri-time-line"></i></span>
+            <div>
+              <h4>Working Hours</h4>
+              <p>Mon – Sat: 9AM – 6PM</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Contact Form -->
+        <form class="contact__form" id="contact-form" novalidate>
+          <div class="form__row">
+            <div class="form__group">
+              <label for="contact-name">Full Name</label>
+              <input type="text" id="contact-name" placeholder="Syed Imran Shah" required />
+              <span class="form__error" id="name-error"></span>
+            </div>
+            <div class="form__group">
+              <label for="contact-email">Email Address</label>
+              <input type="email" id="contact-email" placeholder="you@example.com" required />
+              <span class="form__error" id="email-error"></span>
+            </div>
+          </div>
+          <div class="form__group">
+            <label for="contact-subject">Subject</label>
+            <select id="contact-subject" required>
+              <option value="">Select a subject</option>
+              <option value="booking">Flight Booking</option>
+              <option value="support">Customer Support</option>
+              <option value="package">Travel Package</option>
+              <option value="other">Other</option>
+            </select>
+            <span class="form__error" id="subject-error"></span>
+          </div>
+          <div class="form__group">
+            <label for="contact-message">Message</label>
+            <textarea id="contact-message" rows="5" placeholder="Tell us how we can help you..." required></textarea>
+            <span class="form__error" id="message-error"></span>
+          </div>
+          <button type="submit" class="btn contact__submit" id="contact-submit">
+            <span id="submit-text"><i class="ri-send-plane-line"></i> Send Message</span>
+            <span id="submit-loading" style="display:none;"><i class="ri-loader-4-line"></i> Sending...</span>
+          </button>
+          <div class="form__success" id="form-success" style="display:none;">
+            <i class="ri-checkbox-circle-line"></i>
+            <p>Message sent successfully! We'll get back to you within 24 hours.</p>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- ============================
+         FOOTER
+    ============================= -->
+    <footer>
+      <div class="section__container footer__container">
+        <div class="footer__col">
+          <div class="footer__logo">
+            <a href="#home" class="logo" aria-label="SyedFlights Home">
+              SyedFlights <i class="ri-flight-takeoff-line logo__icon"></i>
+            </a>
+          </div>
+          <p>Explore the world with ease and excitement. Your journey begins here, where seamless planning meets unforgettable experiences.</p>
+          <ul class="footer__socials">
+            <li><a href="#" aria-label="Follow us on Facebook"><i class="ri-facebook-fill"></i></a></li>
+            <li><a href="#" aria-label="Follow us on Instagram"><i class="ri-instagram-line"></i></a></li>
+            <li><a href="#" aria-label="Subscribe on YouTube"><i class="ri-youtube-line"></i></a></li>
+          </ul>
+        </div>
+        <div class="footer__col">
+          <h4>Quick Links</h4>
+          <ul class="footer__links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#search">Search Flights</a></li>
+            <li><a href="#about">Destinations</a></li>
+            <li><a href="#package">Packages</a></li>
+          </ul>
+        </div>
+        <div class="footer__col">
+          <h4>Contact Us</h4>
+          <ul class="footer__links">
+            <li><a href="tel:+919876543210"><span><i class="ri-phone-fill"></i></span> +91 9876543210</a></li>
+            <li><a href="mailto:info@syedflights.com"><span><i class="ri-record-mail-line"></i></span> info@syedflights.com</a></li>
+            <li><a href="#"><span><i class="ri-map-pin-2-fill"></i></span> New Delhi, India</a></li>
+          </ul>
+        </div>
+        <div class="footer__col">
+          <h4>Newsletter</h4>
+          <form id="subscribe-form" onsubmit="handleSubscribe(event)">
+            <input type="email" id="subscribe-email" placeholder="Enter your email" required aria-label="Email for newsletter" />
+            <button class="btn" type="submit">Subscribe</button>
+          </form>
+          <p id="subscribe-msg" style="display:none; color:#4caf50; margin-top:8px; font-size:0.9rem;">✅ Thank you for subscribing!</p>
+        </div>
+      </div>
+      <div class="footer__bar">
+        Copyright &copy; 2024 SyedFlights by Syed Imran Shah. All rights reserved.
+      </div>
+    </footer>
+
+    <script src="https://unpkg.com/scrollreveal"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="main.js"></script>
+  </body>
+</html>
