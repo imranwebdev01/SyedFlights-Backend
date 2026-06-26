@@ -1,19 +1,31 @@
 // ============================================================
 // CONTACT ROUTES — /api/contact
-// Wires up the existing contact form on your site to actually
-// save messages instead of just simulating success in JS.
 // ============================================================
+
 const express = require("express");
 const db = require("../db/database");
+const nodemailer = require("nodemailer");
 
 const router = express.Router();
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-// ------------------------------------------------------------
+// ===================== Nodemailer =====================
+console.log("EMAIL_USER:", process.env.EMAIL_USER);
+console.log("EMAIL_PASS exists:", !!process.env.EMAIL_PASS);
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+});
+
+// ======================================================
 // POST /api/contact
-// ------------------------------------------------------------
-router.post("/", (req, res) => {
+// ======================================================
+
+router.post("/", async (req, res) => {
   try {
     const { name, email, subject, message } = req.body;
 
@@ -38,21 +50,82 @@ router.post("/", (req, res) => {
       });
     }
 
-    db.prepare(
-      `INSERT INTO contact_messages (name, email, subject, message)
-       VALUES (?, ?, ?, ?)`
-    ).run(name.trim(), email.toLowerCase(), subject, message.trim());
+    // ===========================
+    // Save message in SQLite
+    // ===========================
 
-    res.status(201).json({
+    db.prepare(`
+      INSERT INTO contact_messages (name, email, subject, message)
+      VALUES (?, ?, ?, ?)
+    `).run(
+      name.trim(),
+      email.toLowerCase(),
+      subject.trim(),
+      message.trim()
+    );
+
+    // ===========================
+    // Send email to you
+    // ===========================
+
+    await transporter.sendMail({
+      from: `"SyedFlights Website" <${process.env.EMAIL_USER}>`,
+      to: process.env.EMAIL_USER,
+      subject: `📩 New Contact Form: ${subject}`,
+      html: `
+        <h2>New Contact Form Submission</h2>
+
+        <p><strong>Name:</strong> ${name}</p>
+
+        <p><strong>Email:</strong> ${email}</p>
+
+        <p><strong>Subject:</strong> ${subject}</p>
+
+        <hr>
+
+        <p>${message}</p>
+      `,
+    });
+
+    // ===========================
+    // Auto reply to customer
+    // ===========================
+
+   console.log("Sending auto reply...");
+
+try {
+  await transporter.sendMail({
+    from: `"SyedFlights" <${process.env.EMAIL_USER}>`,
+    to: email,
+    subject: "Thank you for contacting SyedFlights",
+    html: `
+      <h2>Hi ${name},</h2>
+      <p>Thank you for contacting <strong>SyedFlights</strong>.</p>
+      <p>We have received your message and will get back to you within 24 hours.</p>
+    `,
+  });
+
+  console.log("✅ Auto reply sent");
+
+} catch (err) {
+  console.error("❌ AUTO REPLY ERROR");
+  console.error(err);
+}
+
+    return res.status(201).json({
       success: true,
-      message: "Message sent successfully! We'll get back to you within 24 hours.",
+      message: "Message sent successfully!",
     });
+
   } catch (err) {
-    console.error("Contact form error:", err);
-    res.status(500).json({
+
+    console.error(err);
+
+    return res.status(500).json({
       success: false,
-      message: "Something went wrong. Please try again.",
+      message: "Unable to send message.",
     });
+
   }
 });
 
