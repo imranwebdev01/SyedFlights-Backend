@@ -69,7 +69,8 @@ await sendEmail({
 
   } catch (err) {
 
-    console.error(err);
+    console.error("BREVO ERROR:");
+console.error(err.response?.body || err);
 
     return res.status(500).json({
       success: false,
