@@ -57,10 +57,29 @@ router.post("/", async (req, res) => {
 // ===========================
 
 await sendEmail({
-  name,
-  email,
-  subject,
-  message,
+  to: "syedimranshah695@gmail.com",
+  toName: "Syed Imran Shah",
+
+  subject: `📩 New Contact Form: ${subject}`,
+
+  replyTo: {
+    email,
+    name,
+  },
+
+  html: `
+    <h2>New Contact Form Submission</h2>
+
+    <p><strong>Name:</strong> ${name}</p>
+
+    <p><strong>Email:</strong> ${email}</p>
+
+    <p><strong>Subject:</strong> ${subject}</p>
+
+    <hr>
+
+    <p>${message}</p>
+  `,
 });
     return res.status(201).json({
       success: true,

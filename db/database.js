@@ -36,23 +36,29 @@ db.exec(`
     message TEXT NOT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
   )
-`);
-
-// ------------------------------------------------------------
-// BOOKINGS TABLE (bonus — lets logged-in users "save" a search)
+`);// ------------------------------------------------------------
+// BOOKINGS TABLE
 // ------------------------------------------------------------
 db.exec(`
   CREATE TABLE IF NOT EXISTS bookings (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
+    booking_reference TEXT UNIQUE,
     user_id INTEGER NOT NULL,
+    full_name TEXT,
+    email TEXT,
+    phone TEXT,
+    trip_type TEXT DEFAULT 'One Way',
     from_city TEXT NOT NULL,
     to_city TEXT NOT NULL,
     depart_date TEXT NOT NULL,
     return_date TEXT,
+    flight_class TEXT DEFAULT 'Economy',
     passengers INTEGER DEFAULT 1,
+    status TEXT DEFAULT 'Pending',
+    payment_status TEXT DEFAULT 'Pending',
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME,
     FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
   )
 `);
-
 module.exports = db;

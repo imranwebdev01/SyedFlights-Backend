@@ -8,6 +8,7 @@ const db = require("../db/database");
 const { authenticateToken } = require("../middleware/auth");
 
 const router = express.Router();
+const generateBookingReference = require("../utils/bookingReference");
 
 // Every route below runs authenticateToken first
 router.use(authenticateToken);
@@ -25,46 +26,84 @@ router.post("/", (req, res) => {
         message: "From city, to city, and departure date are required.",
       });
     }
-
-    const result = db
-      .prepare(
-        `INSERT INTO bookings (user_id, from_city, to_city, depart_date, return_date, passengers)
-         VALUES (?, ?, ?, ?, ?, ?)`
-      )
-      .run(
-        req.user.id,
-        fromCity,
-        toCity,
-        departDate,
-        returnDate || null,
-        passengers || 1
-      );
-
+const bookingReference = generateBookingReference();
+const result = db
+      .prepare(`
+INSERT INTO bookings
+(
+    booking_reference,
+    user_id,
+    from_city,
+    to_city,
+    depart_date,
+    return_date,
+    passengers,
+    status,
+    payment_status
+)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+`)
+    .run(
+    bookingReference,
+    req.user.id,
+    fromCity,
+    toCity,
+    departDate,
+    returnDate || null,
+    passengers || 1,
+    "Pending",
+    "Pending"
+);
+console.log("Generated booking reference:", bookingReference);
     res.status(201).json({
-      success: true,
-      message: "Trip saved to your account!",
-      bookingId: result.lastInsertRowid,
-    });
+    success: true,
+    message: "Booking created successfully.",
+    bookingId: result.lastInsertRowid,
+    bookingReference,
+});
   } catch (err) {
     console.error("Booking save error:", err);
     res.status(500).json({ success: false, message: "Something went wrong." });
   }
 });
 
-// ------------------------------------------------------------
+   // ------------------------------------------------------------
 // GET /api/bookings — list all saved trips for the logged-in user
 // ------------------------------------------------------------
 router.get("/", (req, res) => {
-  const bookings = db
-    .prepare(
-      `SELECT id, from_city, to_city, depart_date, return_date, passengers, created_at
-       FROM bookings WHERE user_id = ? ORDER BY created_at DESC`
-    )
-    .all(req.user.id);
+  try {
+    const bookings = db
+      .prepare(`
+        SELECT
+          booking_reference,
+          id,
+          status,
+          payment_status,
+          from_city,
+          to_city,
+          depart_date,
+          return_date,
+          flight_class,
+          passengers,
+          created_at
+        FROM bookings
+        WHERE user_id = ?
+        ORDER BY created_at DESC
+      `)
+      .all(req.user.id);
 
-  res.json({ success: true, bookings });
+    res.json({
+      success: true,
+      bookings,
+    });
+  } catch (err) {
+    console.error("Booking fetch error:", err);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch bookings.",
+    });
+  }
 });
-
 // ------------------------------------------------------------
 // DELETE /api/bookings/:id — remove a saved trip (only if it's yours)
 // ------------------------------------------------------------
