@@ -27,6 +27,12 @@ router.post("/", (req, res) => {
       });
     }
 const bookingReference = generateBookingReference();
+const user = db
+  .prepare("SELECT * FROM users WHERE id = ?")
+  .get(req.user.id);
+
+console.log("Decoded user id:", req.user.id);
+console.log("User exists:", user);
 const result = db
       .prepare(`
 INSERT INTO bookings
