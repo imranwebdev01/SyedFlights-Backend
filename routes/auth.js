@@ -64,7 +64,8 @@ router.post("/signup", async (req, res) => {
 
     // ---- Hash password & create user ----
     const passwordHash = await bcrypt.hash(password, SALT_ROUNDS);
-
+console.log("Booking user ID:", req.user.id);
+console.log("Booking request:", req.body);
     const result = db
       .prepare(
         "INSERT INTO users (full_name, email, password_hash) VALUES (?, ?, ?)"

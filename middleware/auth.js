@@ -25,6 +25,7 @@ function authenticateToken(req, res, next) {
       });
     }
     // Attach decoded user info (id, email) to the request
+    console.log("Decoded JWT:", decoded);
     req.user = decoded;
     next();
   });
